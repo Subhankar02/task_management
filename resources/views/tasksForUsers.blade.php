@@ -139,7 +139,7 @@
                             </div>
                         </div>
                         <div class="well">
-                            <table id="Table_ID" class="table table-striped table-bordered" style="width: 100%;">
+                            <table class="table table-striped table-bordered" style="width: 100%;">
                                 <thead class="table-light">
                                     <tr>
                                     <th>Sl No.</th>
@@ -149,7 +149,7 @@
                                         <th>Date</th>
                                     </tr>
                                 </thead>
-                                <tbody id="user_data">
+                                <tbody id="task_data">
                                 </tbody>
                             </table>
                         </div>
@@ -197,7 +197,7 @@
                     </tr>
                    `
                 })
-                $('#user_data').html(html)
+                $('#task_data').html(html)
             }
         })
     }
@@ -218,15 +218,16 @@
             var resp = response.data
             var html = ""
             $.each(resp, function(index, item){
-                html +=`
-                <tr>
+                    html +=`
+                    <tr>
                     <td>${index+1}</td>
-                    <td>${item.task.title}</td>
-                    <td>${item.task.description}</td>
-                    <td>${item.user.name}</td>
-                    <td>${item.task_date}</td>
-                    `
-            })
+                        <td>${item.task.title}</td>
+                        <td>${item.task.description}</td>
+                        <td>${item.user.name}</td>
+                        <td>${item.task_date}</td>
+                    </tr>
+                   `
+                })
             $('#task_data').html(html)
         }
     })

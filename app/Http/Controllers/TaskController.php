@@ -70,6 +70,7 @@ class TaskController extends Controller
         return response()->json($data);
         }else{
             $readData = Task::whereDate('created_at', '=', Carbon::parse($task_date)->format('Y-m-d'))->get();
+            // dd($readData);
             $readData1=[];
             foreach($readData as $i=>$data ){
                 $readData1[$i]['user'] = user::select('name')->where('uid', $data->user_id)->first();
