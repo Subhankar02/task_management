@@ -237,7 +237,7 @@ $("#logedout").click(function() {
         $.ajax({
         type: 'GET',
         dataType:"JSON",
-        url: "{{url('api/logout')}}",       
+        url: "{{url('logout')}}",       
         success: function(data){
             console.log(data);  
             if(data.success){
