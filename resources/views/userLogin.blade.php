@@ -15,7 +15,7 @@
   <form class="login-form" method="post" action="{{url('login')}}">
     @csrf
     <div class="form-group">
-      <label for="username">Username:</label>
+      <label for="username">Email:</label>
       <input type="text" id="email" name="email" placeholder="Enter your email" required>
     </div>
     <div class="form-group">
