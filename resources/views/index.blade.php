@@ -7,68 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="{{asset('index.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .nav-big {
-            overflow: hidden;
-            background-color: #0d6efd;
-            padding: 10px 10px;
-        }
-
-        .nav-big a.logo {
-            font-size: 25px;
-            font-weight: bold;
-            color: white;
-        }
-
-        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-        .row.content {
-            height: 550px
-        }
-
-        .nav {
-            padding-top: 10px;
-        }
-
-        /* Set gray background color and 100% height */
-        .sidenav {
-            background-color: #f1f1f1;
-            height: 100%;
-        }
-
-        /* On small screens, set height to 'auto' for the grid */
-        @media screen and (max-width: 767px) {
-            .row.content {
-                height: auto;
-            }
-
-            table {
-                display: block;
-                height: 500px;
-                overflow-y: scroll;
-            }
-
-            .nav-big {
-                display: none;
-            }
-        }
-
-        .min-head {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-        }
-        .logout-btn{
-            margin-right: 40px;
-        }
-        .word_limit{
-            color: #706f6c;
-        }
-        .validation_message{
-            color: red;
-        }
-    </style>
+    
 </head>
 
 <body>
@@ -128,12 +70,21 @@
             <div class="col-lg-9">
                 <div class="min-head">
                     <h4>Dashboard</h4>
-                    <button class="btn btn-primary" id="open_modal">Add+</button>
+                    <button class="btn btn-primary" onclick="open_modal()">Add+</button>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="well">
-                            <table id="Table_ID" class="table table-striped table-bordered" style="width: 100%;">
+                            <div class="row">
+                                <div class="col-3">
+                                    <input type="date" id="search_date" class="form-control">
+                                </div>
+                                <div class="col-3">
+                                    <button id="search" class="btn btn-outline-success my-2 my-sm-0">search</button>
+                                </div>
+                            </div>
+                            
+                            <table  class="table table-striped table-bordered" style="width: 100%;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Sl No.</th>
@@ -184,7 +135,9 @@
                                 <option value="">select</option>
                             </select>
                             <span class="validation_message" id="warn_user_name"></span>
+                            <input type="hidden" id="task_id_for_edit">
                         </div>
+                        
                         <button type="button" id="save_task" class="btn btn-primary">Save Task</button>
                     </form>
                 </div>
@@ -200,39 +153,79 @@
     $(document).ready(function () {
         $('#Table_ID').DataTable();
 
-        $.ajax({
-            type: 'GET',
-            dataType:"JSON",
-            url: "{{url('api/get/tasks')}}",       
-            success: function(response){
-                console.log(response.data)
-                var resp = response.data
-                var html = ""
-                $.each(resp, function(index, item){
-                    html +=`
-                    <tr>
-                        <td>${index+1}</td>
-                        <td>${item.task.title}</td>
-                        <td>${item.task.description}</td>
-                        <td>${item.user.name}</td>
-                        <td>${item.task.created_at}</td>
-                        <td>
-                        <button type="button" onclick="edit_data('${item.uid}')" class="btn btn-warning">EDIT</button>
-                        <button type="button" onclick="delete_data('${item.uid}')" class="btn btn-danger">DELETE</button>
-                        </td>`
-                })
-                $('#task_data').html(html)
-            }
-        })
+        get_tasks()
     });
 </script>
 <script>
+function get_tasks(){
+    var data = 'null'
+    $.ajax({
+        type: 'GET',
+        dataType:"JSON",
+        url: `{{url('api/get/tasks/${data}')}}`,       
+        success: function(response){
+            console.log(response.data)
+            var resp = response.data
+            var html = ""
+            $.each(resp, function(index, item){
+                html +=`
+                <tr>
+                    <td>${index+1}</td>
+                    <td>${item.task.title}</td>
+                    <td>${item.task.description}</td>
+                    <td>${item.user.name}</td>
+                    <td>${item.task_date}</td>
+                    <td>
+                    <button type="button" onclick="edit_data('${item.task.uid}')" class="btn btn-warning">EDIT</button>
+                    <button type="button" onclick="delete_data('${item.task.uid}')" class="btn btn-danger">DELETE</button>
+                    </td>`
+            })
+            $('#task_data').html(html)
+        }
+    })
+}
+
+$('#search').click(function(){
+    var data = $('#search_date').val()
+    // alert(data)
+    $.ajax({
+        type: 'GET',
+        dataType:"JSON",
+        url: `{{url('api/get/tasks/${data}')}}`,       
+        success: function(response){
+            console.log(response.data)
+            var resp = response.data
+            var html = ""
+            $.each(resp, function(index, item){
+                html +=`
+                <tr>
+                    <td>${index+1}</td>
+                    <td>${item.task.title}</td>
+                    <td>${item.task.description}</td>
+                    <td>${item.user.name}</td>
+                    <td>${item.task_date}</td>
+                    <td>
+                    <button type="button" onclick="edit_data('${item.task.uid}')" class="btn btn-warning">EDIT</button>
+                    <button type="button" onclick="delete_data('${item.task.uid}')" class="btn btn-danger">DELETE</button>
+                    </td>`
+            })
+            $('#task_data').html(html)
+        }
+    })
+})
+
 function edit_data(task_id){
     $.ajax({
         type: 'GET',
         dataType:"JSON",
         url: `{{url('api/get/a_task/${task_id}')}}`,     
         success: function(response){
+            // $('#myModal').modal('show');
+            open_modal()
+            $("#task_title").val(response.data.task.title)
+            $("#task_description").val(response.data.task.description)
+            $("#task_id_for_edit").val(response.data.task.uid)
+            $("#user_name").html('<option value="' + response.data.user.uid + '">' + response.data.user.name + '</option>')
             console.log(response.data)
         }
     })
@@ -242,15 +235,16 @@ function delete_data(task_id){
     $.ajax({
         type: 'GET',
         dataType:"JSON",
-        url: `{{url('api/get/a_task/${task_id}')}}`,     
+        url: `{{url('api/delete/task/${task_id}')}}`,     
         success: function(response){
             console.log(response.data)
+            get_tasks()
         }
     })
 }
 
 // get users
-$('#open_modal').on('click', function () {
+function open_modal(){
     $.ajax({
         type: 'GET',
         dataType:"JSON",
@@ -266,12 +260,13 @@ $('#open_modal').on('click', function () {
             $('#user_name').html(html);
         }
     })
-});
+};
 
 $("#save_task").click(function() {
     var task_title          = $("#task_title").val()
     var task_description    = $("#task_description").val()
     var user_name           = $("#user_name").val()
+    var task_id             = $("#task_id_for_edit").val()
     
     var wordCount = task_title.length;
     if(task_title == ""){
@@ -284,25 +279,51 @@ $("#save_task").click(function() {
     }else{
         $("#warn_user_name").text("");
         
-        var data={
+        if(task_id == ""){
+            var data={
             task_title:task_title,
             task_description:task_description,
             user_name:user_name,
             "_token":"{{csrf_token()}}"
-        }
-        $.ajax({
-            type: 'POST',
-            data:data,
-            url: "{{url('api/add/task')}}",       
-            success: function(response){
-                console.log(data);
-                if(response.success){
-                    $("#task_title").val("")
-                    $("#task_description").val("")
-                    $("#user_name").val("")
-                }          
             }
-        });
+            $.ajax({
+                type: 'POST',
+                data:data,
+                url: "{{url('api/add/task')}}",       
+                success: function(response){
+                    console.log(data);
+                    if(response.success){
+                        $("#task_title").val("")
+                        $("#task_description").val("")
+                        $("#user_name").val("")
+                        get_tasks()
+                    }          
+                }
+            });
+        }else if(task_id != ""){
+            var data={
+            task_title:task_title,
+            task_description:task_description,
+            user_name:user_name,
+            task_id:task_id,
+            "_token":"{{csrf_token()}}"
+            }
+            $.ajax({
+                type: 'POST',
+                data:data,
+                url: "{{url('api/update/task')}}",       
+                success: function(response){
+                    console.log(data);
+                    if(response.success){
+                        $("#task_title").val("")
+                        $("#task_description").val("")
+                        $("#user_name").val("")
+                        get_tasks()
+                    }          
+                }
+            });
+        }
+        
     }
 })
 

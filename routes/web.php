@@ -25,7 +25,9 @@ use App\Http\Controllers\LoginController;
 Route::group(['middleware' => ['auth:sanctum']], function (){
     
 });
-Route::get('/login/page',            [LoginController::Class, 'login_page'])->name('login');
+Route::post('/login',                       [LoginController::Class, 'check_login'])->name('login');
+Route::get('/',                             [LoginController::Class, 'login_page'])->name('login/page');
 Route::get('/index',                        [LoginController::Class, 'index_page']);
 Route::get('/users',                        [LoginController::Class, 'users_page']);
 Route::get('/tasks/for_users',              [LoginController::Class, 'tasks_for_users_page']);
+Route::get('/logout',                       [LoginController::Class, 'logout'])->name('logout');

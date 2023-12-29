@@ -20,9 +20,10 @@ use App\Http\Controllers\LoginController;
 Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
-Route::post('/login',       [LoginController::Class, 'check_login']);
+
 Route::post('/add/task',                    [TaskController::Class, 'add_task']);
 Route::get('/get/users',                    [TaskController::Class, 'get_users']);
-Route::get('/get/tasks',                    [TaskController::Class, 'get_tasks']);
+Route::get('/get/tasks/{task_id}',          [TaskController::Class, 'get_tasks']);
 Route::get('/get/a_task/{task_id}',         [TaskController::Class, 'get_a_task']);
-Route::get('/logout',          [LoginController::Class, 'logout'])->name('logout');
+Route::get('/delete/task/{task_id}',        [TaskController::Class, 'delete_task']);
+Route::post('/update/task',                 [TaskController::Class, 'update_task']);

@@ -6,69 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{asset('users.css')}}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .nav-big {
-            overflow: hidden;
-            background-color: #0d6efd;
-            padding: 10px 10px;
-        }
-
-        .nav-big a.logo {
-            font-size: 25px;
-            font-weight: bold;
-            color: white;
-        }
-
-        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-        .row.content {
-            height: 550px
-        }
-
-        .nav {
-            padding-top: 10px;
-        }
-
-        /* Set gray background color and 100% height */
-        .sidenav {
-            background-color: #f1f1f1;
-            height: 100%;
-        }
-
-        /* On small screens, set height to 'auto' for the grid */
-        @media screen and (max-width: 767px) {
-            .row.content {
-                height: auto;
-            }
-
-            table {
-                display: block;
-                height: 500px;
-                overflow-y: scroll;
-            }
-
-            .nav-big {
-                display: none;
-            }
-        }
-
-        .min-head {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-        }
-        .logout-btn{
-            margin-right: 40px;
-        }
-        .word_limit{
-            color: #706f6c;
-        }
-        .validation_message{
-            color: red;
-        }
-    </style>
+    
 </head>
 
 <body>

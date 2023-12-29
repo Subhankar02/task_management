@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="{{asset('tasksForUsers.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
@@ -129,6 +130,14 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-3">
+                                <input type="date" id="search_date" class="form-control">
+                            </div>
+                            <div class="col-3">
+                                <button id="search" class="btn btn-outline-success my-2 my-sm-0">search</button>
+                            </div>
+                        </div>
                         <div class="well">
                             <table id="Table_ID" class="table table-striped table-bordered" style="width: 100%;">
                                 <thead class="table-light">
@@ -161,11 +170,17 @@
 <script>
     $(document).ready(function () {
         $('#Table_ID').DataTable();
-
+        get_tasks()
+        
+    });
+</script>
+<script>
+    function get_tasks(){
+        var data = 'null'
         $.ajax({
             type: 'GET',
             dataType:"JSON",
-            url: "{{url('api/get/tasks')}}",       
+            url: `{{url('api/get/tasks/${data}')}}`,       
             success: function(response){
                 console.log(response.data)
                 var resp = response.data
@@ -174,21 +189,48 @@
                     html +=`
                     <tr>
                     <td>${index+1}</td>
-                        <td>${item.title}</td>
-                        <td>${item.description}</td>
-                        <td>${item.user_id}</td>
-                        <td>${item.created_at}</td>
+                        <td>${item.task.title}</td>
+                        <td>${item.task.description}</td>
+                        <td>${item.user.name}</td>
+                        <td>${item.task_date}</td>
                         
                     </tr>
-                    
                    `
                 })
                 $('#user_data').html(html)
             }
         })
-    });
-</script>
-<script>
+    }
+
+
+
+
+
+    $('#search').click(function(){
+    var data = $('#search_date').val()
+    // alert(data)
+    $.ajax({
+        type: 'GET',
+        dataType:"JSON",
+        url: `{{url('api/get/tasks/${data}')}}`,       
+        success: function(response){
+            console.log(response.data)
+            var resp = response.data
+            var html = ""
+            $.each(resp, function(index, item){
+                html +=`
+                <tr>
+                    <td>${index+1}</td>
+                    <td>${item.task.title}</td>
+                    <td>${item.task.description}</td>
+                    <td>${item.user.name}</td>
+                    <td>${item.task_date}</td>
+                    `
+            })
+            $('#task_data').html(html)
+        }
+    })
+})
 // Logout
 $("#logedout").click(function() {
         $.ajax({

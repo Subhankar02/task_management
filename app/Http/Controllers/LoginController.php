@@ -11,29 +11,37 @@ class LoginController extends Controller
 {
     public function index_page(){
         $session_data = session('id');
-        // dd($session_data);
-        // if(!empty($session_data)){
+        if(Auth::guard('web')->check()) {
             return view('index');
-        // }else{
-            // return view('userLogin');
-        // }
+        }else{
+            return Redirect('/');
+        }
         
     }
 
     public function users_page(){
+        if(Auth::guard('web')->check()) {
         return view('users');
+        }else{
+            return Redirect('/');
+        }
     }
 
     public function tasks_for_users_page(){
+        if(Auth::guard('web')->check()) {
         return view('tasksForUsers');
+        }else{
+            return Redirect('/');
+        }
     }
     
     public function login_page(){
         return view('userLogin');
 
     }
+
+    /**Login */
     public function check_login(Request $request){
-        // dd($request);
         $this->validate($request, [
             'email'    => 'required|email',
             'password' => 'required|min:8'
@@ -42,49 +50,31 @@ class LoginController extends Controller
             'email.required'    => 'email required',                      
             'password.required' => 'password required',                                     
         ]);
-        
         $checkActivity = User::where('email',$request->email)->first();
         if($checkActivity){
             if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
-                // dd($checkActivity->uid);
-                $request->session()->put('id', $checkActivity->uid);
+
+                $request->session()->flash('alert', array('message'=>$checkActivity->name.' Login Successful', 'status'=>'success'));
                 if($checkActivity->role == 'admin'){
-                    $data=[
-                        'session'   => $session_data = session('id'),
-                        'url'       => 'index',
-                        'success'   => true,
-                    ];
-                    
+                    return Redirect('index');
                 }else{
-                    $data=[
-                        'url'       => 'index',
-                        'success'   => true,
-                    ];
+                    return Redirect('tasks/for_users');
                 }
-                return response()->json($data);
-                // Authentication was successful...
-                
             } else{
-                $data=[
-                    
-                    'massege'       => 'Wrong password!',
-                    'success'       => false,
-                ];
-                return response()->json($data);
+                $request->session()->flash('alert', array('message'=>'Login Failed', 'status'=>'error'));
+                return redirect()->back();
             }
         }else {
-            $data=[
-                'massege'       => 'Incorrect email id!',
-                'success'       => false,
-            ];
-            return response()->json($data);
+            $request->session()->flash('alert', array('message'=>'User Not Found', 'status'=>'error'));
+            return redirect()->back();
         }
     }
 
+    /**Logout */
     public function logout(){
         auth()->guard('web')->logout();
         $data=[
-            'url'           => 'login/page',
+            'url'           => '',
             'massege'       => 'Loged out',
             'success'       => true,
         ];
